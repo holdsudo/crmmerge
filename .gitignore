@@ -1,0 +1,11 @@
+node_modules/
+.next/
+/.env
+storage/
+.DS_Store
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+terraform.tfvars.json
+crash.log

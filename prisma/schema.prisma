@@ -1,0 +1,313 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+enum DealStatus {
+  NEW
+  PENDING
+  APPROVED
+  FUNDED
+  CLOSED
+  CANCELLED
+}
+
+enum QbSyncStatus {
+  NOT_SYNCED
+  PENDING
+  SYNCED
+  FAILED
+}
+
+enum ContactSource {
+  MANUAL
+  CSV
+  VENDOR
+  CUSTOMER
+}
+
+enum ContactStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+  COMPLAINED
+  SUPPRESSED
+}
+
+enum CampaignStatus {
+  DRAFT
+  READY
+  SENDING
+  SENT
+  PAUSED
+  FAILED
+}
+
+enum RecipientStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+  COMPLAINED
+  OPENED
+  CLICKED
+  UNSUBSCRIBED
+  SKIPPED
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  passwordHash  String
+  role          UserRole
+  active        Boolean    @default(true)
+  failedLoginCount Int     @default(0)
+  lockedUntil   DateTime?
+  lastLoginAt   DateTime?
+  sessionVersion Int       @default(1)
+  mfaEnabled    Boolean    @default(false)
+  mfaSecretCiphertext String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  createdDeals  Deal[]     @relation("DealCreatedBy")
+  assignedDeals Deal[]     @relation("DealAssignedStaff")
+  auditLogs     AuditLog[]
+  securityEvents SecurityEvent[]
+  templatesCreated EmailTemplate[] @relation("TemplateCreatedBy")
+  templatesUpdated EmailTemplate[] @relation("TemplateUpdatedBy")
+  campaignsCreated EmailCampaign[] @relation("CampaignCreatedBy")
+  campaignsUpdated EmailCampaign[] @relation("CampaignUpdatedBy")
+}
+
+model Vendor {
+  id          String   @id @default(cuid())
+  name        String
+  contactName String?
+  email       String?
+  phone       String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deals       Deal[]
+  contact     EmailContact?
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String?
+  email       String?
+  coBuyerName String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deals       Deal[]
+  contact     EmailContact?
+}
+
+model Deal {
+  id                  String       @id @default(cuid())
+  vendorId            String
+  customerId          String?
+  customerName        String
+  buyerPhone          String?
+  buyerEmail          String?
+  coBuyerName         String?
+  dealDate            DateTime
+  amountOwedToVendor  Float
+  downPayment         Float?
+  termMonths          Int?
+  interestAmount      Float?
+  carType             String
+  vehicleYear         Int?
+  vehicleMake         String?
+  vehicleModel        String?
+  interestRate        Float
+  yourProfit          Float
+  fiProducts          String?
+  contractFilePath    String?
+  contractFileName    String?
+  status              DealStatus   @default(NEW)
+  lenderName          String?
+  notes               String?
+  qbSyncStatus        QbSyncStatus @default(NOT_SYNCED)
+  qbExternalId        String?
+  createdById         String
+  assignedStaffId     String?
+  updatedById         String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  vendor              Vendor       @relation(fields: [vendorId], references: [id])
+  customer            Customer?    @relation(fields: [customerId], references: [id])
+  createdBy           User         @relation("DealCreatedBy", fields: [createdById], references: [id])
+  assignedStaff       User?        @relation("DealAssignedStaff", fields: [assignedStaffId], references: [id])
+  auditLogs           AuditLog[]
+
+  @@index([customerId, dealDate])
+  @@index([vendorId, dealDate])
+  @@index([status, dealDate])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  dealId        String
+  userId        String
+  action        String
+  oldValueJson  String?
+  newValueJson  String?
+  previousHash  String?
+  hash          String?
+  createdAt     DateTime @default(now())
+  deal          Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+}
+
+model SecurityEvent {
+  id           String   @id @default(cuid())
+  userId       String?
+  email        String?
+  eventType    String
+  success      Boolean
+  ipAddress    String?
+  userAgent    String?
+  detailsJson  String?
+  previousHash String?
+  hash         String?
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([email, createdAt])
+}
+
+model AppSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailContact {
+  id                String              @id @default(cuid())
+  email             String              @unique
+  name              String?
+  phone             String?
+  company           String?
+  source            ContactSource
+  status            ContactStatus       @default(ACTIVE)
+  notes             String?
+  vendorId          String?             @unique
+  customerId        String?             @unique
+  unsubscribedAt    DateTime?
+  bouncedAt         DateTime?
+  complainedAt      DateTime?
+  lastContactedAt   DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  vendor            Vendor?             @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  customer          Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  campaignRecipients CampaignRecipient[]
+
+  @@index([source, status])
+}
+
+model EmailTemplate {
+  id          String           @id @default(cuid())
+  name        String
+  subject     String
+  previewText String?
+  htmlContent String
+  textContent String?
+  createdById String
+  updatedById String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  createdBy   User             @relation("TemplateCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User             @relation("TemplateUpdatedBy", fields: [updatedById], references: [id])
+  campaigns   EmailCampaign[]
+
+  @@index([name])
+}
+
+model EmailCampaign {
+  id               String              @id @default(cuid())
+  name             String
+  subject          String
+  previewText      String?
+  fromName         String
+  fromEmail        String
+  replyToEmail     String?
+  htmlContent      String
+  textContent      String?
+  templateId       String?
+  status           CampaignStatus      @default(DRAFT)
+  includeVendors   Boolean             @default(false)
+  includeCustomers Boolean             @default(false)
+  includeManual    Boolean             @default(true)
+  manualRecipients String?
+  scheduledAt      DateTime?
+  sentAt           DateTime?
+  notes            String?
+  createdById      String
+  updatedById      String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  template         EmailTemplate?      @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  createdBy        User                @relation("CampaignCreatedBy", fields: [createdById], references: [id])
+  updatedBy        User                @relation("CampaignUpdatedBy", fields: [updatedById], references: [id])
+  recipients       CampaignRecipient[]
+  events           EmailEvent[]
+
+  @@index([status, createdAt])
+}
+
+model CampaignRecipient {
+  id              String           @id @default(cuid())
+  campaignId      String
+  contactId       String?
+  email           String
+  name            String?
+  sourceLabel     String?
+  status          RecipientStatus  @default(PENDING)
+  sentAt          DateTime?
+  openedAt        DateTime?
+  clickedAt       DateTime?
+  bouncedAt       DateTime?
+  complainedAt    DateTime?
+  errorMessage    String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  campaign        EmailCampaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contact         EmailContact?    @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  events          EmailEvent[]
+
+  @@unique([campaignId, email])
+  @@index([status, createdAt])
+}
+
+model EmailEvent {
+  id                  String             @id @default(cuid())
+  campaignId          String?
+  campaignRecipientId String?
+  eventType           String
+  providerMessageId   String?
+  payloadJson         String?
+  createdAt           DateTime           @default(now())
+  campaign            EmailCampaign?     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignRecipient   CampaignRecipient? @relation(fields: [campaignRecipientId], references: [id], onDelete: Cascade)
+
+  @@index([eventType, createdAt])
+}

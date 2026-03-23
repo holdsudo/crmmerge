@@ -1,0 +1,11 @@
+variable "project_id" { type = string }
+variable "region" { type = string }
+variable "service_name" { type = string }
+variable "runtime_service_account_email" { type = string }
+variable "encryption_key" { type = string }
+variable "image_uri" { type = string }
+variable "cloudsql_instance_connection_name" { type = string }
+variable "vpc_connector" { type = string }
+variable "labels" { type = map(string) }
+variable "plain_env" { type = map(string) }
+variable "secret_env" { type = map(string) }

@@ -1,0 +1,11 @@
+project_id               = "example-project-id"
+region                   = "us-east1"
+billing_region           = "us-east1"
+domain_name              = "crm.example.com"
+dns_managed_zone_name    = "crm-example-zone"
+create_dns_zone          = false
+document_bucket_name     = "crm-example-documents"
+web_service_name         = "dealership-vendor-crm"
+artifact_repository_name = "dealership-vendor-crm"
+sql_instance_name        = "dealership-vendor-crm-db"
+sql_database_name        = "dealership_vendor_crm"

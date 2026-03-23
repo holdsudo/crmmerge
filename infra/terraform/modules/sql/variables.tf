@@ -1,0 +1,9 @@
+variable "project_id" { type = string }
+variable "region" { type = string }
+variable "instance_name" { type = string }
+variable "database_name" { type = string }
+variable "tier" { type = string }
+variable "kms_key_name" { type = string }
+variable "private_network" { type = string }
+variable "sql_backup_retention" { type = number }
+variable "labels" { type = map(string) }
