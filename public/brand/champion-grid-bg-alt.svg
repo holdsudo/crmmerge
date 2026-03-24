@@ -1,0 +1,58 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22308A"/>
+      <stop offset="0.44" stop-color="#1A2A78"/>
+      <stop offset="1" stop-color="#0A173D"/>
+    </linearGradient>
+    <radialGradient id="horizon" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(790 684) rotate(90) scale(232 940)">
+      <stop stop-color="#E9FDFF" stop-opacity="1"/>
+      <stop offset="0.22" stop-color="#A5EBFF" stop-opacity="0.98"/>
+      <stop offset="0.44" stop-color="#5FB6FF" stop-opacity="0.64"/>
+      <stop offset="1" stop-color="#5FB6FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="leftGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(314 344) rotate(34) scale(324 204)">
+      <stop stop-color="#5E9CFF" stop-opacity="0.46"/>
+      <stop offset="1" stop-color="#5E9CFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="rightGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1314 364) rotate(144) scale(318 210)">
+      <stop stop-color="#FF5E88" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#FF5E88" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="trailBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#5BC0FF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#D9FFFF" stop-opacity="1"/>
+      <stop offset="1" stop-color="#5BC0FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="trailRed" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF5D84" stop-opacity="0"/>
+      <stop offset="0.48" stop-color="#FF7799" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#FF5D84" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#horizon)"/>
+  <rect width="1600" height="900" fill="url(#leftGlow)"/>
+  <rect width="1600" height="900" fill="url(#rightGlow)"/>
+  <g opacity="0.58">
+    <path d="M0 698H1600" stroke="url(#trailBlue)" stroke-width="4"/>
+    <path d="M0 744H1600" stroke="url(#trailBlue)" stroke-width="1.5"/>
+    <path d="M0 792H1600" stroke="url(#trailBlue)" stroke-width="1"/>
+    <path d="M0 842H1600" stroke="url(#trailBlue)" stroke-width="1"/>
+  </g>
+  <g opacity="0.42">
+    <path d="M0 900L562 620" stroke="url(#trailBlue)" stroke-width="1.2"/>
+    <path d="M218 900L654 584" stroke="url(#trailBlue)" stroke-width="1.8"/>
+    <path d="M390 900L756 608" stroke="url(#trailBlue)" stroke-width="1.4"/>
+    <path d="M904 900L1112 644" stroke="url(#trailBlue)" stroke-width="1.6"/>
+    <path d="M1070 900L1248 696" stroke="url(#trailBlue)" stroke-width="1.1"/>
+  </g>
+  <g opacity="0.78">
+    <path d="M0 636C314 636 562 628 816 628C1070 628 1320 628 1600 628" stroke="url(#trailBlue)" stroke-width="8"/>
+    <path d="M1028 632C1184 604 1328 548 1494 442" stroke="url(#trailBlue)" stroke-width="4"/>
+    <path d="M1118 640C1240 624 1366 600 1510 554" stroke="url(#trailRed)" stroke-width="3"/>
+    <path d="M110 496C212 516 350 538 516 542" stroke="url(#trailBlue)" stroke-width="2.8"/>
+    <path d="M1142 228C1250 256 1372 294 1508 352" stroke="url(#trailRed)" stroke-width="2.3"/>
+    <path d="M126 278C224 300 306 336 386 390" stroke="url(#trailBlue)" stroke-width="2.2"/>
+  </g>
+</svg>
