@@ -39,8 +39,55 @@ export default async function EmailLandingPage() {
 
   return (
     <div className="stack">
+      <section className="hero-panel email-hero-panel">
+        <div className="hero-copy stack">
+          <div>
+            <span className="kicker">Email Workspace</span>
+            <h2 style={{ margin: "6px 0 10px" }}>Champion Auto Finance outbound control center.</h2>
+            <p className="subtitle" style={{ marginTop: 0 }}>
+              Build branded templates, import contacts, send one-offs, and manage full campaign runs from the same CRM your team uses for deals.
+            </p>
+          </div>
+          <div className="hero-stat-row">
+            <div className="hero-stat">
+              <span className="kicker">Templates</span>
+              <strong>{settings.showEmailTemplates === "true" ? "Enabled" : "Hidden"}</strong>
+            </div>
+            <div className="hero-stat">
+              <span className="kicker">Contacts</span>
+              <strong>{settings.showEmailContacts === "true" ? "Enabled" : "Hidden"}</strong>
+            </div>
+            <div className="hero-stat">
+              <span className="kicker">Campaigns</span>
+              <strong>{settings.showEmailCampaigns === "true" ? "Enabled" : "Hidden"}</strong>
+            </div>
+          </div>
+        </div>
+        <div className="hero-visual panel">
+          <img src="/brand/champion-shield-mark.png" alt="Champion Auto Finance shield" className="hero-mark" />
+          <div className="hero-visual-grid">
+            <div>
+              <span className="kicker">Single sender</span>
+              <strong>{settings.showEmailSingle === "true" ? "Ready" : "Hidden"}</strong>
+            </div>
+            <div>
+              <span className="kicker">Mass sender</span>
+              <strong>{settings.showEmailMass === "true" ? "Ready" : "Hidden"}</strong>
+            </div>
+            <div>
+              <span className="kicker">Campaign flow</span>
+              <strong>SES powered</strong>
+            </div>
+            <div>
+              <span className="kicker">Branding</span>
+              <strong>Champion Auto Finance</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="panel">
-        <span className="kicker">Email Workspace</span>
+        <span className="kicker">Workspace Modules</span>
         <h2 style={{ marginTop: 0 }}>Choose an email workflow</h2>
         <div className="grid cards-2">
           {cards.map((card) => (

@@ -33,11 +33,18 @@ export function AppShell({
       <main className="main">
         <div className="main-backdrop" aria-hidden="true" />
         <header className="topbar">
-          <div>
+          <div className="topbar-copy">
             <h1 className="page-title">{title}</h1>
             {subtitle ? <p className="subtitle">{subtitle}</p> : null}
           </div>
           <div className="row">
+            <div className="brand-chip">
+              <img src="/brand/champion-shield-mark.png" alt="Champion Auto Finance mark" className="brand-chip-logo" />
+              <div>
+                <strong>Champion Auto Finance</strong>
+                <div className="helper">Official CRM</div>
+              </div>
+            </div>
             <div className="card" style={{ padding: "12px 16px" }}>
               <strong>{user.name}</strong>
               <div className="helper">{user.role}</div>
@@ -67,7 +74,7 @@ function Sidebar({
   return (
     <aside className="sidebar">
       <div className="brand-lockup">
-        <img src="/brand/champion-logo.png" alt="Champion Auto Finance" className="brand-logo" />
+        <img src="/brand/champion-logo-transparent.png" alt="Champion Auto Finance" className="brand-logo" />
         <div>
           <h2 className="brand">Champion Auto Finance</h2>
           <p className="helper brand-helper">Official CRM workspace for funding, vendor operations, and email outreach.</p>

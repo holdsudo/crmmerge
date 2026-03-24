@@ -121,6 +121,53 @@ export default async function HomeOverviewPage({ searchParams }: HomePageProps) 
 
   return (
     <div className="stack">
+      <section className="hero-panel">
+        <div className="hero-copy stack">
+          <div>
+            <span className="kicker">Champion Auto Finance</span>
+            <h2 style={{ margin: "6px 0 10px" }}>Funding, vendor operations, and outreach in one branded workspace.</h2>
+            <p className="subtitle" style={{ marginTop: 0 }}>
+              Track deal flow, monitor vendor performance, and manage campaign activity from the same operating screen your team uses every day.
+            </p>
+          </div>
+          <div className="hero-stat-row">
+            <div className="hero-stat">
+              <span className="kicker">Active vendors</span>
+              <strong>{vendors.length}</strong>
+            </div>
+            <div className="hero-stat">
+              <span className="kicker">Monthly deals</span>
+              <strong>{kpis.monthDeals}</strong>
+            </div>
+            <div className="hero-stat">
+              <span className="kicker">Monthly profit</span>
+              <strong>{formatCurrency(kpis.monthProfit)}</strong>
+            </div>
+          </div>
+        </div>
+        <div className="hero-visual panel">
+          <img src="/brand/champion-logo-transparent.png" alt="Champion Auto Finance" className="hero-logo" />
+          <div className="hero-visual-grid">
+            <div>
+              <span className="kicker">Month owed</span>
+              <strong>{formatCurrency(kpis.monthAmount)}</strong>
+            </div>
+            <div>
+              <span className="kicker">Week volume</span>
+              <strong>{kpis.weekDeals} deals</strong>
+            </div>
+            <div>
+              <span className="kicker">View mode</span>
+              <strong>{selectedRange}</strong>
+            </div>
+            <div>
+              <span className="kicker">Workspace</span>
+              <strong>Champion CRM</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="panel row-between">
         <div>
           <span className="kicker">Home</span>

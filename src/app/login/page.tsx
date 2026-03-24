@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="login-shell">
       <section className="panel login-card">
-        <img src="/brand/champion-logo.png" alt="Champion Auto Finance" className="login-logo" />
+        <img src="/brand/champion-logo-transparent.png" alt="Champion Auto Finance" className="login-logo" />
         <span className="kicker">Internal Access Only</span>
         <h1 className="page-title">Champion Auto Finance CRM</h1>
         <p className="subtitle">Authorized personnel only. Deal, funding, and outreach activity may be monitored and audited.</p>

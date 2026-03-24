@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dealership Vendor CRM",
-  description: "Internal CRM for vendor deals and QuickBooks sync tracking.",
+  title: "Champion Auto Finance CRM",
+  description: "Internal Champion Auto Finance CRM for funding operations, vendor management, and email outreach.",
   robots: {
     index: false,
     follow: false,

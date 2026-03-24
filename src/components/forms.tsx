@@ -221,7 +221,7 @@ export function SettingsForm({
       <section className="stack">
         <div>
           <span className="kicker">Email Workspace</span>
-          <p className="helper">Sender defaults, SES settings, and navigation controls for outreach features.</p>
+          <p className="helper">Sender defaults, local SMTP delivery, fallback SES settings, and navigation controls for outreach features.</p>
         </div>
         <div className="form-grid">
           <div className="field">
@@ -245,6 +245,29 @@ export function SettingsForm({
             <input id="defaultReplyToEmail" name="defaultReplyToEmail" type="email" defaultValue={settings.defaultReplyToEmail ?? ""} />
           </div>
           <div className="field">
+            <label htmlFor="emailDeliveryMode">Delivery mode</label>
+            <select id="emailDeliveryMode" name="emailDeliveryMode" defaultValue={settings.emailDeliveryMode ?? "smtp"}>
+              <option value="smtp">Local / custom SMTP</option>
+              <option value="ses">AWS SES fallback</option>
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="smtpHost">SMTP host</label>
+            <input id="smtpHost" name="smtpHost" defaultValue={settings.smtpHost ?? ""} />
+          </div>
+          <div className="field">
+            <label htmlFor="smtpPort">SMTP port</label>
+            <input id="smtpPort" name="smtpPort" type="number" min="1" max="65535" defaultValue={settings.smtpPort ?? ""} />
+          </div>
+          <div className="field">
+            <label htmlFor="smtpUsername">SMTP username</label>
+            <input id="smtpUsername" name="smtpUsername" defaultValue={settings.smtpUsername ?? ""} />
+          </div>
+          <div className="field">
+            <label htmlFor="smtpPassword">SMTP password</label>
+            <input id="smtpPassword" name="smtpPassword" type="password" autoComplete="new-password" defaultValue={settings.smtpPassword ?? ""} />
+          </div>
+          <div className="field">
             <label htmlFor="awsRegion">AWS region</label>
             <input id="awsRegion" name="awsRegion" defaultValue={settings.awsRegion ?? ""} />
           </div>
@@ -262,6 +285,10 @@ export function SettingsForm({
           </div>
         </div>
         <div className="checkbox-grid settings-checkbox-grid">
+          <label className="checkbox-card">
+            <input type="checkbox" name="smtpSecure" defaultChecked={settings.smtpSecure === "true"} />
+            <span>Use TLS / secure SMTP</span>
+          </label>
           <label className="checkbox-card">
             <input type="checkbox" name="showEmailContacts" defaultChecked={settings.showEmailContacts === "true"} />
             <span>Show Email Contacts</span>

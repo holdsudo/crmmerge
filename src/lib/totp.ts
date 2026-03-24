@@ -79,7 +79,7 @@ export function verifyTotpCode(secret: string, code: string) {
 }
 
 export function buildTotpUri(email: string, secret: string) {
-  const issuer = process.env.MFA_ISSUER || "Dealership Vendor CRM";
+  const issuer = process.env.MFA_ISSUER || "Champion Auto Finance CRM";
   const label = `${issuer}:${email}`;
   const params = new URLSearchParams({
     secret,

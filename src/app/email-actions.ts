@@ -8,7 +8,7 @@ import { getAppSettings } from "@/lib/app-settings";
 import { parseCsv, normalizeCsvHeader } from "@/lib/csv";
 import { requireAdminOrManager, requireUser } from "@/lib/auth";
 import { appendSecurityEvent, assertTrustedOrigin } from "@/lib/security";
-import { sendSesEmail } from "@/lib/email";
+import { sendEmail } from "@/lib/email";
 
 const manualContactSchema = z.object({
   email: z.string().email(),
@@ -270,7 +270,7 @@ async function sendCampaignRecipient(
   const settings = await getAppSettings();
   const unsubscribeUrl = buildRecipientUnsubscribeUrl(settings.unsubscribeBaseUrl, recipient.email);
 
-  const messageId = await sendSesEmail({
+  const messageId = await sendEmail({
     region: settings.awsRegion || undefined,
     fromEmail: campaign.fromEmail,
     fromName: campaign.fromName,
@@ -750,7 +750,7 @@ export async function sendTestEmailAction(formData: FormData) {
   });
 
   const unsubscribeUrl = buildRecipientUnsubscribeUrl(settings.unsubscribeBaseUrl, parsed.toEmail);
-  const messageId = await sendSesEmail({
+  const messageId = await sendEmail({
     region: settings.awsRegion || undefined,
     fromEmail: parsed.fromEmail,
     fromName: parsed.fromName,
@@ -808,7 +808,7 @@ export async function sendSingleEmailAction(formData: FormData) {
   });
 
   const unsubscribeUrl = buildRecipientUnsubscribeUrl(settings.unsubscribeBaseUrl, parsed.toEmail);
-  const messageId = await sendSesEmail({
+  const messageId = await sendEmail({
     region: settings.awsRegion || undefined,
     fromEmail: parsed.fromEmail,
     fromName: parsed.fromName,
@@ -923,6 +923,12 @@ export async function updateEmailSettingsAction(formData: FormData) {
     ["defaultFromEmail", String(formData.get("defaultFromEmail") || "")],
     ["defaultReplyToEmail", String(formData.get("defaultReplyToEmail") || "")],
     ["unsubscribeBaseUrl", String(formData.get("unsubscribeBaseUrl") || "")],
+    ["emailDeliveryMode", String(formData.get("emailDeliveryMode") || "smtp")],
+    ["smtpHost", String(formData.get("smtpHost") || "")],
+    ["smtpPort", String(formData.get("smtpPort") || "")],
+    ["smtpSecure", String(formData.get("smtpSecure") === "on")],
+    ["smtpUsername", String(formData.get("smtpUsername") || "")],
+    ["smtpPassword", String(formData.get("smtpPassword") || "")],
     ["awsRegion", String(formData.get("awsRegion") || "")],
     ["sesConfigurationSet", String(formData.get("sesConfigurationSet") || "")],
     ["testSendDefaultEmail", String(formData.get("testSendDefaultEmail") || "")],

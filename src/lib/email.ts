@@ -1,4 +1,6 @@
 import { SendEmailCommand, SESv2Client } from "@aws-sdk/client-sesv2";
+import nodemailer from "nodemailer";
+import { getAppSettings } from "@/lib/app-settings";
 
 type SendEmailInput = {
   region?: string | null;
@@ -14,21 +16,21 @@ type SendEmailInput = {
   tags?: Array<{ name: string; value: string }>;
 };
 
-const clientCache = new Map<string, SESv2Client>();
+const sesClientCache = new Map<string, SESv2Client>();
 
 function getRegion(preferred?: string | null) {
   return preferred || process.env.AWS_REGION || process.env.SES_REGION || "us-east-1";
 }
 
-export function getSesClient(region?: string | null) {
+function getSesClient(region?: string | null) {
   const resolvedRegion = getRegion(region);
-  const existing = clientCache.get(resolvedRegion);
+  const existing = sesClientCache.get(resolvedRegion);
   if (existing) {
     return existing;
   }
 
   const client = new SESv2Client({ region: resolvedRegion });
-  clientCache.set(resolvedRegion, client);
+  sesClientCache.set(resolvedRegion, client);
   return client;
 }
 
@@ -58,7 +60,23 @@ function appendUnsubscribeCopy(text: string, unsubscribeUrl?: string | null) {
   return `${text}\n\nUnsubscribe: ${unsubscribeUrl}`;
 }
 
-export async function sendSesEmail(input: SendEmailInput) {
+function parseBoolean(value: string | null | undefined, fallback = false) {
+  if (!value) {
+    return fallback;
+  }
+  return value === "true";
+}
+
+function resolveEmailMode(settings: Record<string, string>) {
+  const explicit = settings.emailDeliveryMode?.trim().toLowerCase();
+  if (explicit === "smtp" || explicit === "ses") {
+    return explicit;
+  }
+
+  return settings.smtpHost?.trim() ? "smtp" : "ses";
+}
+
+async function sendViaSes(input: SendEmailInput) {
   const client = getSesClient(input.region);
   const textBody = appendUnsubscribeCopy(input.textContent?.trim() || stripHtmlToText(input.htmlContent), input.unsubscribeUrl);
 
@@ -84,4 +102,49 @@ export async function sendSesEmail(input: SendEmailInput) {
   );
 
   return response.MessageId || null;
+}
+
+async function sendViaSmtp(input: SendEmailInput, settings: Record<string, string>) {
+  const host = settings.smtpHost?.trim() || process.env.SMTP_HOST;
+  const portValue = settings.smtpPort?.trim() || process.env.SMTP_PORT || "25";
+  const port = Number(portValue);
+
+  if (!host || Number.isNaN(port)) {
+    throw new Error("SMTP host and port must be configured.");
+  }
+
+  const secure = parseBoolean(settings.smtpSecure || process.env.SMTP_SECURE, port === 465);
+  const user = settings.smtpUsername?.trim() || process.env.SMTP_USERNAME || "";
+  const pass = settings.smtpPassword || process.env.SMTP_PASSWORD || "";
+
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: user ? { user, pass } : undefined
+  });
+
+  const textBody = appendUnsubscribeCopy(input.textContent?.trim() || stripHtmlToText(input.htmlContent), input.unsubscribeUrl);
+  const response = await transporter.sendMail({
+    from: buildFromAddress(input.fromName, input.fromEmail),
+    to: input.toEmail,
+    replyTo: input.replyToEmail || undefined,
+    subject: input.subject,
+    html: input.htmlContent,
+    text: textBody,
+    headers: input.unsubscribeUrl ? { "List-Unsubscribe": `<${input.unsubscribeUrl}>` } : undefined
+  });
+
+  return response.messageId || null;
+}
+
+export async function sendEmail(input: SendEmailInput) {
+  const settings = await getAppSettings();
+  const mode = resolveEmailMode(settings);
+
+  if (mode === "smtp") {
+    return sendViaSmtp(input, settings);
+  }
+
+  return sendViaSes(input);
 }
