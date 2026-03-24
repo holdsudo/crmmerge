@@ -31,6 +31,7 @@ export function AppShell({
     <div className="app-shell">
       <Sidebar user={user} navGroups={navGroups} />
       <main className="main">
+        <div className="main-backdrop" aria-hidden="true" />
         <header className="topbar">
           <div>
             <h1 className="page-title">{title}</h1>
@@ -65,10 +66,13 @@ function Sidebar({
 
   return (
     <aside className="sidebar">
-      <h2 className="brand">Dealership CRM</h2>
-      <p className="helper" style={{ marginTop: 0 }}>
-        Vendor deals, reporting, accounting sync, and outreach in one place.
-      </p>
+      <div className="brand-lockup">
+        <img src="/brand/champion-logo.png" alt="Champion Auto Finance" className="brand-logo" />
+        <div>
+          <h2 className="brand">Champion Auto Finance</h2>
+          <p className="helper brand-helper">Official CRM workspace for funding, vendor operations, and email outreach.</p>
+        </div>
+      </div>
       <div className="stack" style={{ marginTop: 24 }}>
         {navGroups.map((group) => (
           <div key={group.label} className="nav-group">
